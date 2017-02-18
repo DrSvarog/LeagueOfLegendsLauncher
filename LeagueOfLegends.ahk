@@ -2,6 +2,9 @@
 #MaxThreads 50
 #MaxThreadsPerHotkey 1
 
+SetWorkingDir, %A_ScriptDir%
+#include Gdip_All.ahk
+
 ;Pour une détection permissive des noms de fenêtres (et de la fenêtre PvP.net si cachée)
 ; SetTitleMatchMode, 1
 DetectHiddenWindows, On
@@ -36,7 +39,7 @@ IfNotExist, %gameFullPath%
 ;Si on n'a toujours pas trouvé le jeu (vraiment pas de bol !); on demande à l'utilisateur de le saisir
 IfNotExist, %gameFullPath%
 {	
-	FileSelectFile, gameFullPath, 1, %A_ScriptDir%, Veuillez indiquer l`'emplacement du jeu, lol.launcher.exe
+	FileSelectFile, gameFullPath, 1,, Veuillez indiquer l`'emplacement du jeu, lol.launcher.exe
 	If (ErrorLevel == 1)
 		ExitApp
 	IniWrite, %gameFullPath%, %iniFile%, General, GameFullPath
@@ -51,17 +54,36 @@ if (password == "ERROR")
 	IniWrite, %password%, %iniFile%, General, password
 }
 
+SetWinDelay, 30
+SetKeyDelay, 2, 20
+SetMouseDelay, 20
+
+launching:
 IfWinExist, League of Legends (TM) Client ; In-game
 	WinActivate
-else IfWinExist, League of Legends ; Matchmaker
-	WinActivateMatchMaker()
-else IfWinExist, LoL Patcher ; Patcher
-	WinActivate
-else
+Else IfWinExist, League of Legends ; Matchmaker
+{
+	WinActivateAll("League of Legends")
+	if(clickOnPicture("logo_matchmaker.png")) ; deselect input password zone
+	{
+		if(clickOnPicture("password.png"))
+			send %password%{Enter}
+	}
+}
+; Else IfWinExist, LoL Patcher ; Patcher
+; {
+	; WinActivate
+	; clickOnPicture("launch.png")
+	; WinWait, League of Legends ; Matchmaker
+	; goto launching
+; }
+Else
+{
 	Run, %gameFullPath%
-	
-;IfWinExist, LoL Patcher ... refaire mot de passe etc...
-	
+	WinWait, League of Legends ; Matchmaker
+	goto launching
+}
+		
 ; Minimiser Discord (close réduit au systray)
 WinWait, Discord,, 60
 WinClose
@@ -69,7 +91,7 @@ WinClose
 Return
 
 #IfWinActive League of Legends ; Matchmaker
-F1::send %password%{Enter}
+; F1::send %password%{Enter}
 
 #IfWinActive League of Legends ; Matchmaker
 #IfWinActive League of Legends (TM) Client ; In-game
@@ -93,15 +115,43 @@ F1::send %password%{Enter}
 	Return
 }
 
-WinActivateMatchMaker()
+WinActivateAll(name)
 {
-	WinGet, id, list, League of Legends
+	WinGet, id, list, %name%
 	Loop, %id%
 		WinActivate, % "ahk_id " . id%A_Index%
 }
 
+clickOnPicture(imagefile)
+{
+	IfNotExist, %imagefile%
+		Return false
+		
+	ListLines, off
+	pToken := Gdip_Startup()
+	Gdip_GetDimensions(pBitmap := Gdip_CreateBitmapFromFile(imagefile), w, h)
+	Gdip_DisposeImage(pBitmap)
+	Gdip_ShutDown(pToken)
+	ListLines, on
+	
+	ErrorLevel := 1, retry := 0
+	while(ErrorLevel == true && retry++ < 100)
+		ImageSearch, x, y, 0, 0, A_ScreenWidth-1, A_ScreenHeight-1, %imagefile%
+	
+	if(ErrorLevel == 0)
+	{
+		; Find the middle of the pic
+		x += w / 2
+		y += h / 2
+		Click %x%,%y%
+		Return true
+	}
+	
+	Return false
+}
+
 Update:
-	RunWait, CMD /C git pull, %A_ScriptDir%
+	RunWait, CMD /C git pull
 	Reload
 Return
 
