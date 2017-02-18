@@ -101,22 +101,8 @@ WinActivateMatchMaker()
 }
 
 Update:
-	throw Not implemented
-
-	;On prend la dernière mise à jour
-	UrlDownloadToFile, https://drive.google.com/open?id=0B2s6BYZ0DlKKV0lFVy1iUVZwSGc, Update.dat
-	
-	;Si on a pu télécharger un fichier
-	if(!ErrorLevel)
-	{
-		;On remplace l'actuel script par le nouveau (écrasement)
-		FileMove, Update.dat, %A_ScriptFullPath%, 1
-		
-		;Et on relance le script
-		Reload
-	}
-	Else
-		MsgBox Aucune version n'a été trouvée en ligne
+	RunWait, CMD /C git pull, %A_ScriptDir%
+	Reload
 Return
 
 
