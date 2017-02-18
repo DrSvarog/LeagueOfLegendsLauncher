@@ -1,0 +1,4 @@
+# delete files that should be ignored, or untrack them with 
+# git rm --cached <file list or pattern>
+
+*.ini
