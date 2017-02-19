@@ -135,8 +135,11 @@ clickOnPicture(imagefile)
 	ListLines, on
 	
 	ErrorLevel := 1, retry := 0
-	while(ErrorLevel == true && retry++ < 100)
+	while(ErrorLevel == true && retry++ < 30)
+	{
 		ImageSearch, x, y, 0, 0, A_ScreenWidth-1, A_ScreenHeight-1, %imagefile%
+		Sleep 500
+	}
 	
 	if(ErrorLevel == 0)
 	{
