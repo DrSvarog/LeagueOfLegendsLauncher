@@ -150,10 +150,20 @@ clickOnPicture(imagefile)
 	Return false
 }
 
+update()
+{
 Update:
-	RunWait, CMD /C git pull
+	static tempFile :=  A_Temp . "out.txt"
+	; WshShell object: http://msdn.microsoft.com/en-us/library/aew9yb99
+	shell := ComObjCreate("WScript.Shell")
+	; Execute a single command via cmd.exe
+	exec := shell.Run(ComSpec . " /C git pull >" . tempFile, 0, true)
+	; Read and return the command's output
+	FileRead, output, %tempFile%
+	Msgbox % output
 	Reload
-Return
+	Return
+}
 
 
 
