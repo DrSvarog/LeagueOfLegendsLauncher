@@ -152,7 +152,6 @@ clickOnPicture(imagefile)
 
 update()
 {
-Update:
 	static tempFile :=  A_Temp . "out.txt"
 	; WshShell object: http://msdn.microsoft.com/en-us/library/aew9yb99
 	shell := ComObjCreate("WScript.Shell")
@@ -165,5 +164,8 @@ Update:
 	Return
 }
 
+Update:
+	update()
+Return
 
 
