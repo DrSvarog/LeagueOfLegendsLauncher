@@ -5,8 +5,7 @@
 SetWorkingDir, %A_ScriptDir%
 #include Gdip_All.ahk
 
-;Pour une détection permissive des noms de fenêtres (et de la fenêtre PvP.net si cachée)
-; SetTitleMatchMode, 1
+SetTitleMatchMode, 3 ; Coz matchmaker the game are starting with the same name
 DetectHiddenWindows, On
 	
 ;Ajouter une entrée dans le menu pour mise à jour du script
@@ -39,12 +38,13 @@ IfNotExist, %gameFullPath%
 ;Si on n'a toujours pas trouvé le jeu (vraiment pas de bol !); on demande à l'utilisateur de le saisir
 IfNotExist, %gameFullPath%
 {	
-	FileSelectFile, gameFullPath, 1,, Veuillez indiquer l`'emplacement du jeu, lol.launcher.exe
+	FileSelectFile, gameFullPath, 1,, Veuillez indiquer l`'emplacement du jeu, LeagueClient.exe
 	If (ErrorLevel == 1)
 		ExitApp
 	IniWrite, %gameFullPath%, %iniFile%, General, GameFullPath
 }
 Menu, tray, Icon, %gameFullPath%, 1 
+OnMessage(0x404, "AHK_NOTIFYICON")
 
 ;Lecture du mot de passe s'il est présent dans le fichier
 IniRead, password, %iniFile%, General, password
@@ -63,7 +63,7 @@ IfWinExist, League of Legends (TM) Client ; In-game
 	WinActivate
 Else IfWinExist, League of Legends ; Matchmaker
 {
-	WinActivateAll("League of Legends")
+	WinActivate, League of Legends, League of Legends ; Matchmaker
 	if(clickOnPicture("logo_matchmaker.png")) ; deselect input password zone
 	{
 		if(clickOnPicture("password.png"))
@@ -90,7 +90,7 @@ WinClose
 
 Return
 
-#IfWinActive League of Legends ; Matchmaker
+; #IfWinActive League of Legends ; Matchmaker
 ; F1::send %password%{Enter}
 
 #IfWinActive League of Legends ; Matchmaker
@@ -113,13 +113,6 @@ Return
 		; msgbox %titre%
 		ControlSend, ahk_parent,%A_ThisHotkey%, ahk_class {97E27FAA-C0B3-4b8e-A693-ED7881E99FC1}
 	Return
-}
-
-WinActivateAll(name)
-{
-	WinGet, id, list, %name%
-	Loop, %id%
-		WinActivate, % "ahk_id " . id%A_Index%
 }
 
 clickOnPicture(imagefile)
@@ -151,6 +144,22 @@ clickOnPicture(imagefile)
 	}
 	
 	Return false
+}
+
+AHK_NOTIFYICON(wParam, lParam) ; http://www.autohotkey.com/board/topic/62125-how-do-i-change-the-actions-of-clicking-the-tray-icon/?p=391707
+{
+	static hidden := false
+    if (lParam = 0x202) ; WM_LBUTTONUP
+	{
+		if(hidden)
+			WinShow, League of Legends, League of Legends ; Matchmaker
+		else
+			WinHide, League of Legends, League of Legends ; Matchmaker
+			
+		hidden := !hidden
+	}
+	; else if (lParam = 0x205) ; WM_RBUTTONUP
+    ;    Menu, Tray, Show
 }
 
 update()
