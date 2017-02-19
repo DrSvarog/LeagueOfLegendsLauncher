@@ -149,7 +149,7 @@ clickOnPicture(imagefile)
 AHK_NOTIFYICON(wParam, lParam) ; http://www.autohotkey.com/board/topic/62125-how-do-i-change-the-actions-of-clicking-the-tray-icon/?p=391707
 {
 	WinGet, Style, Style, League of Legends, League of Legends ; Matchmaker
-	Transform, visible, BitAnd, %Style%, 0x10000000 ; 0x10000000 is WS_VISIBLE. 
+	visible := Style & 0x10000000 ; 0x10000000 is WS_VISIBLE. 
 	
     if (lParam = 0x202) ; WM_LBUTTONUP
 	{
