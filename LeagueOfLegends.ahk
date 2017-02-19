@@ -152,7 +152,10 @@ AHK_NOTIFYICON(wParam, lParam) ; http://www.autohotkey.com/board/topic/62125-how
     if (lParam = 0x202) ; WM_LBUTTONUP
 	{
 		if(hidden)
+		{
 			WinShow, League of Legends, League of Legends ; Matchmaker
+			WinActivate, League of Legends, League of Legends ; Matchmaker
+		}
 		else
 			WinHide, League of Legends, League of Legends ; Matchmaker
 			
