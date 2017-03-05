@@ -64,9 +64,9 @@ IfWinExist, League of Legends (TM) Client ; In-game
 Else IfWinExist, League of Legends ; Matchmaker
 {
 	WinActivate, League of Legends, League of Legends ; Matchmaker
-	if(clickOnPicture("logo_matchmaker.png")) ; deselect input password zone
+	if(clickOnPicture("logo_matchmaker.png", 50)) ; deselect input password zone
 	{
-		if(clickOnPicture("password.png"))
+		if(clickOnPicture("password.png", 10))
 			send %password%{Enter}
 	}
 }
@@ -115,7 +115,14 @@ Return
 	Return
 }
 
-clickOnPicture(imagefile)
+#IfWinActive League of Legends ; Matchmaker
+{
+	F12::
+		clickOnPicture("accept.png")
+	Return
+}
+
+clickOnPicture(imagefile, timeout := 0x7FFFFFFFFFFFFFFF)
 {
 	IfNotExist, %imagefile%
 		Return false
@@ -128,10 +135,10 @@ clickOnPicture(imagefile)
 	ListLines, on
 	
 	ErrorLevel := 1, retry := 0
-	while(ErrorLevel == true && retry++ < 30)
+	while(ErrorLevel == true && retry++ < timeout)
 	{
 		ImageSearch, x, y, 0, 0, A_ScreenWidth-1, A_ScreenHeight-1, %imagefile%
-		Sleep 500
+		Sleep 1000
 	}
 	
 	if(ErrorLevel == 0)
