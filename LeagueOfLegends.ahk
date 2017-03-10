@@ -127,6 +127,9 @@ clickOnPicture(imagefile)
 	Gdip_ShutDown(pToken)
 	ListLines, on
 	
+	; Gui, Add, Picture, hwndmyPic, %imageButton%
+	; ControlGetPos,,, width, height,,ahk_id %myPic%
+	
 	ErrorLevel := 1, retry := 0
 	while(ErrorLevel == true && retry++ < 30)
 	{
