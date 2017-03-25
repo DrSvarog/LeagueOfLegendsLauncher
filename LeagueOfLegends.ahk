@@ -13,14 +13,14 @@ Menu, tray, add
 Menu, tray, add, Update
 
 ;On a besoin des droits admins pour intercepter les raccourcis dans league of legends (le jeu est lancé en mode admin)
-if not A_IsAdmin
-{
-	Try
-		Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
-	Catch
-		MsgBox Failed to launch as Admin
-	ExitApp
-}
+; if not A_IsAdmin
+; {
+	; Try
+		; Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
+	; Catch
+		; MsgBox Failed to launch as Admin
+	; ExitApp
+; }
 
 ;Recherche du jeu
 SplitPath, A_ScriptFullPath, , , , iniFile
